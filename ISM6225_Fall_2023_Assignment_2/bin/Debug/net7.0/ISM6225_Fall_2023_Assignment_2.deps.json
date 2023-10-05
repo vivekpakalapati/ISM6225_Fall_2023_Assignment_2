@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "ISM6225_Fall_2023_Assignment_2/1.0.0": {
+        "runtime": {
+          "ISM6225_Fall_2023_Assignment_2.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ISM6225_Fall_2023_Assignment_2/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
