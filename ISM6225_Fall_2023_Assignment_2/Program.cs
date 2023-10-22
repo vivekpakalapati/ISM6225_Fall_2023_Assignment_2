@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  
 YOU ARE NOT ALLOWED TO MODIFY ANY FUNCTION DEFINATION's PROVIDED.
 WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
@@ -113,7 +113,39 @@ namespace ISM6225_Fall_2023_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                List<int> missingrange = new List<int>(); //to track range
+                List<IList<int>> rangelist = new List<IList<int>>(); 
+
+                // To jandle the lower edge case
+                if (lower < nums[0]) 
+                {
+                    missingrange.Add(lower); //lower limit of range
+                    missingrange.Add(nums[0] - 1); //To finds the upper limit of range by removing 1 from the value in positio n.
+                    rangelist.Add(missingrange);
+                    lower = nums[0] + 1;
+                }
+
+                //To find the missing ranges
+                for (int i = 1; i < nums.Length; i++)
+                {
+                    if (nums[i] - nums[i - 1] > 1)
+                    { // To Check if the numbers are nonconsecutive
+                        missingrange = new List<int>(); 
+                        missingrange.Add(nums[i - 1] + 1);
+                        missingrange.Add(nums[i] - 1);
+                        rangelist.Add(missingrange);
+                    }
+                }
+
+                // To Handle the upper edge
+                if (upper > nums[nums.Length - 1]) 
+                {                                  
+                    missingrange = new List<int>(); 
+                    missingrange.Add(nums[nums.Length - 1] + 1); 
+                    missingrange.Add(upper);
+                    rangelist.Add(missingrange);
+                }
+                return rangelist;  
             }
             catch (Exception)
             {
@@ -157,7 +189,36 @@ namespace ISM6225_Fall_2023_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return s.Length == 0;
+                Dictionary<char, char> goodbracketcombos = new Dictionary<char, char> 
+                {
+                    {'(', ')' },
+                    {'[', ']' },
+                    {'{', '}' }
+                };
+
+                List<char> bracketopen = new List<char>();
+
+                for (int i = 0; i < s.Length; i++)
+                {
+                    char c = s[i]; 
+
+                    if (goodbracketcombos.ContainsKey(c))  
+                    {
+                        bracketopen.Add(c); 
+                    }
+                    else if (goodbracketcombos.ContainsValue(c)) 
+                    {
+                        if (bracketopen.Count == 0 || goodbracketcombos[bracketopen[bracketopen.Count - 1]] != c)
+
+                        {
+                            return false;
+                        }
+                        bracketopen.RemoveAt(bracketopen.Count - 1); 
+                    }
+                }
+                return bracketopen.Count == 0; //Tocheck if all open brackets areclosed.
+
+                //return  s.Length=0;
             }
             catch (Exception)
             {
@@ -191,8 +252,34 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 1;
+                // Write your code here, and you can modify the return value according to the requirements
+                if (prices == null || prices.Length <= 1) //Tocheck if the inputs are valid
+                {
+                    return 0;
+                }
+
+                int maxprofit = 0;
+                int lowprice = prices[0];
+
+                for (int i = 1; i < prices.Length; i++) //start the loop w/ i = 1.
+                {
+                    if (prices[i] < lowprice) 
+                    {
+                        lowprice = prices[i];
+                    }
+                    else
+                    {
+                        int profittracker = prices[i] - lowprice; //TO  monitor the profit
+                        if (profittracker > maxprofit) //to track the maximum profit
+                        {
+                            maxprofit = profittracker;
+                        }
+                    }
+                }
+
+                return maxprofit;
+
+                //return 1;
             }
             catch (Exception)
             {
@@ -230,7 +317,28 @@ namespace ISM6225_Fall_2023_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return false;
+
+                int leftpointer = 0; //starts from first int
+                int rightpointer = s.Length - 1;  //will start at the last int
+                HashSet<string> strobopairs = new HashSet<string>
+                {
+                    "00", "11", "88", "69", "96"  //strobogrammatic numbers to check
+                };
+                while (leftpointer <= rightpointer) 
+                {
+                    char leftchar = s[leftpointer];  // compareing the chars
+                    char rightchar = s[rightpointer];
+
+                    if (!strobopairs.Contains($"{leftchar}{rightchar}")) //checking the list strobopairs
+                    {
+                        return false; //if the pair is not indexer thr hashset.
+                    }
+                    leftpointer++; 
+                    rightpointer--;
+                }
+                return true;
+
+                //return false;
             }
             catch (Exception)
             {
@@ -271,14 +379,33 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                Dictionary<int, int> countMap = new Dictionary<int, int>();
+                int goodPairs = 0;
+
+                foreach (int num in nums)
+                {
+                    if (countMap.ContainsKey(num))
+                    {
+                        // If the number has been encountered before, add the count of that number to the total count of good pairs.
+                        goodPairs += countMap[num];
+                        // Raise the count for this number 
+                        countMap[num]++;
+                    }
+                    else
+                    {
+                        // If it's the first then add to the dictionary.
+                        countMap[num] = 1;
+                    }
+                }
+
+                return goodPairs;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         Question 6
@@ -321,14 +448,41 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                long firstMax = long.MinValue; //The lowest possible value
+                long secondMax = long.MinValue;
+                long thirdMax = long.MinValue;
+
+                foreach (int num in nums)
+                {
+                    if (num == firstMax || num == secondMax || num == thirdMax)
+                        continue; // to skip the duplicates
+
+                    if (num > firstMax)
+                    {
+                        thirdMax = secondMax;
+                        secondMax = firstMax;
+                        firstMax = num;
+                    }
+                    else if (num > secondMax)
+                    {
+                        thirdMax = secondMax;
+                        secondMax = num;
+                    }
+                    else if (num > thirdMax)
+                    {
+                        thirdMax = num;
+                    }
+                }
+
+                // return the maximum number if there is no third number.
+                return thirdMax == long.MinValue ? (int)firstMax : (int)thirdMax;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         
@@ -355,7 +509,21 @@ namespace ISM6225_Fall_2023_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return new List<string>() { };
+                List<string> output = new List<string>();
+
+                for (int i = 0; i < currentState.Length - 1; i++) // This will keep it in bounds
+                {
+                    if (currentState[i] == '+' && currentState[i + 1] == '+')
+                    {
+                        char[] nextState = currentState.ToCharArray(); // making this an array.
+                        nextState[i] = '-'; 
+                        nextState[i + 1] = '-';
+                        output.Add(new string(nextState)); //change the results back to string and then add it to the  output.
+                    }
+                }
+                return output;
+
+                //retur new List<string>() { };
             }
             catch (Exception)
             {
@@ -384,7 +552,20 @@ namespace ISM6225_Fall_2023_Assignment_2
         public static string RemoveVowels(string s)
         {
             // Write your code here and you can modify the return value according to the requirements
-            return "";
+            List<char> newstring = new List<char>();
+
+            List<char> vowels = new List<char> { 'a', 'e', 'i', 'o', 'u' };
+
+            for (int i = 0; i < s.Length; i++) //if the char is not a vowel. 
+            {
+                if (!vowels.Contains(s[i]))
+                {
+                    newstring.Add(s[i]);
+                }
+            }
+            return new string(newstring.ToArray());
+
+            //return "";
         }
 
         /* Inbuilt Functions - Don't Change the below functions */
@@ -392,21 +573,21 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("["); // Add the opening square bracket for the outer list
+            sb.Append("["); //opening square bracket
 
             for (int i = 0; i < input.Count; i++)
             {
                 IList<int> innerList = input[i];
                 sb.Append("[" + string.Join(",", innerList) + "]");
 
-                // Add a comma unless it's the last inner list
+                // Adding a comma unless it's the last inner list
                 if (i < input.Count - 1)
                 {
                     sb.Append(",");
                 }
             }
 
-            sb.Append("]"); // Add the closing square bracket for the outer list
+            sb.Append("]"); 
 
             return sb.ToString();
         }
@@ -414,15 +595,14 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         static string ConvertIListToArray(IList<string> input)
         {
-            // Create an array to hold the strings in input
+            // Createing an array
             string[] strArray = new string[input.Count];
 
             for (int i = 0; i < input.Count; i++)
             {
-                strArray[i] = "\"" + input[i] + "\""; // Enclose each string in double quotes
+                strArray[i] = "\"" + input[i] + "\""; // Encloseing each string with double quotes
             }
 
-            // Join the strings in strArray with commas and enclose them in square brackets
             string result = "[" + string.Join(",", strArray) + "]";
 
             return result;
